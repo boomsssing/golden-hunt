@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Hunt Jewelry - Colorado Springs' Premier Jewelry Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="store.png" alt="Golden Hunt Jewelry" class="logo-image">
+            <div class="logo-text">
+                <span class="logo-main">GOLDEN HUNT</span>
+                <span class="logo-sub">JEWELRY</span>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#we-buy">We Buy</a>
+            <a href="#we-sell">We Sell</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="theme-toggle">
+            <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle day/night mode">
+                <span class="toggle-icon day-icon">☀️</span>
+                <span class="toggle-icon night-icon">🌙</span>
+            </button>
+        </div>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-video-bg">
+            <video autoplay muted loop preload="metadata" controls="false">
+                <source src="back.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-subtitle">International Luxury Jewelry Experts</div>
+            <h1 class="hero-title">
+                <span class="title-line">Luxury Jewelry</span>
+                <span class="title-line">Buyers & Sellers</span>
+            </h1>
+            <p class="hero-description">We buy and sell the finest diamonds, gold bars, gemstones, platinum, and luxury timepieces with unmatched expertise and fair pricing</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="scrollToSection('we-sell')">View Collection</button>
+                <button class="btn-secondary" onclick="scrollToSection('we-buy')">Sell Your Jewelry</button>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+            <span>Scroll to explore</span>
+        </div>
+    </header>
+
+    <section id="we-buy" class="we-sell-section">
+        <div class="we-sell-header">
+            <h1>WE BUY</h1>
+            <p>Get top dollar for your precious items with our expert appraisal service</p>
+        </div>
+        
+        <div class="buy-categories">
+            <div class="category-container">
+                <h3 class="category-title">DIAMONDS & GEMSTONES</h3>
+                <div class="buy-category buy-diamonds" onclick="openServicePopup('diamonds')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">GOLD & PLATINUM</h3>
+                <div class="buy-category buy-gold" onclick="openServicePopup('gold')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">LUXURY WATCHES</h3>
+                <div class="buy-category buy-watches" onclick="openServicePopup('watches')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">GOLD BARS</h3>
+                <div class="buy-category buy-goldbars" onclick="openServicePopup('goldbars-buy')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">GEMSTONES</h3>
+                <div class="buy-category buy-gemstones" onclick="openServicePopup('gemstones-buy')"></div>
+            </div>
+        </div>
+
+        <!-- Service Popup Modal -->
+        <div id="servicePopup" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-popup" onclick="closeServicePopup()">&times;</span>
+                <div id="servicePopupBody">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="we-sell" class="we-sell-section">
+        <div class="we-sell-header">
+            <h1>WE SELL</h1>
+        </div>
+        
+        <div class="sell-categories">
+            <div class="category-container">
+                <h3 class="category-title">JEWELRY</h3>
+                <div class="sell-category" onclick="openPopup('jewelry')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">ENGAGEMENT & BRIDAL</h3>
+                <div class="sell-category" onclick="openPopup('engagement')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">COINS & CURRENCY</h3>
+                <div class="sell-category" onclick="openPopup('coins')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">GOLD BARS</h3>
+                <div class="sell-category" onclick="openPopup('goldbars')"></div>
+            </div>
+            
+            <div class="category-container">
+                <h3 class="category-title">GEMSTONES</h3>
+                <div class="sell-category" onclick="openPopup('gemstones')"></div>
+            </div>
+        </div>
+        
+        <!-- Popup Modal -->
+        <div id="categoryPopup" class="popup-overlay">
+            <div class="popup-content">
+                <span class="close-popup" onclick="closePopup()">&times;</span>
+                <div id="popupBody">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="something-for-everyone">
+            <div class="section-intro">
+                <h3>Something for Everyone</h3>
+                <p>Stop by our convenient locations to view our beautiful and unique selection of jewelry and diamonds, as well as our rare/collectible coins and bullion. If you don't see what you're looking for, our friendly, well-trained staff will be happy to special order what you need.</p>
+            </div>
+            
+            <div class="cta-grid">
+                <div class="cta-card">
+                    <div class="cta-icon">🏪</div>
+                    <h4>Visit Our Showrooms</h4>
+                    <p>Discover our exceptional collection in person</p>
+                    <div class="cta-buttons">
+                        <button class="cta-btn primary" onclick="scrollToSection('contact')">Our Locations</button>
+                    </div>
+                </div>
+                
+
+                <div class="cta-card">
+                    <div class="cta-icon">💎</div>
+                    <h4>Special Orders</h4>
+                    <p>Can't find what you're looking for? We'll get it for you</p>
+                    <div class="cta-buttons">
+                        <button class="cta-btn secondary" onclick="scrollToSection('contact')">Contact Us</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-indicators">
+        <div class="trust-grid">
+            <div class="trust-item">
+                <div class="trust-number">25+</div>
+                <div class="trust-label">Years Experience</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-number">$10M+</div>
+                <div class="trust-label">Jewelry Purchased</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-number">5000+</div>
+                <div class="trust-label">Happy Clients</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-number">A+</div>
+                <div class="trust-label">BBB Rating</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="testimonials-header">
+            <h2>What Our Clients Say</h2>
+            <p>Real experiences from satisfied customers across our locations</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <div class="stars">★★★★★</div>
+                    <p>"Exceptional service! I sold my grandmother's diamond ring and the staff was incredibly knowledgeable and fair. They explained every step of the appraisal process and offered me a price that exceeded my expectations."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar" data-avatar="1"></div>
+                    <div class="author-info">
+                        <div class="author-name">Sarah Mitchell</div>
+                        <div class="author-location">Colorado Springs</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <div class="stars">★★★★★</div>
+                    <p>"Found my perfect engagement ring here! The custom design service was outstanding. They worked with my budget and created something truly unique. My fiancée absolutely loves it!"</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar" data-avatar="2"></div>
+                    <div class="author-info">
+                        <div class="author-name">James Rodriguez</div>
+                        <div class="author-location">Colorado Springs</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <div class="stars">★★★★★</div>
+                    <p>"Brilliant experience at the Edinburgh location! Sold my late father's Rolex collection and they handled everything with such care and professionalism. The authentication process was thorough and the pricing was very fair."</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar" data-avatar="3"></div>
+                    <div class="author-info">
+                        <div class="author-name">Margaret Thompson</div>
+                        <div class="author-location">Edinburgh</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    <div class="stars">★★★★★</div>
+                    <p>"I've been buying gold bars here for investment purposes for over 3 years. Their prices are competitive, the quality is always guaranteed, and the staff truly understands precious metals. Highly recommended!"</p>
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar" data-avatar="4"></div>
+                    <div class="author-info">
+                        <div class="author-name">David Chen</div>
+                        <div class="author-location">Colorado Springs</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>International Luxury Jewelry Experts</h2>
+                <p class="about-intro">For over 25 years, Golden Hunt Jewelry has been the trusted name in luxury jewelry buying and selling. With locations in Colorado Springs, USA and Edinburgh, Scotland, we serve clients across two continents with the same commitment to excellence.</p>
+                <div class="about-features">
+                    <div class="feature">
+                        <div class="feature-icon">🔍</div>
+                        <div class="feature-text">
+                            <h4>Expert Appraisals</h4>
+                            <p>GIA certified gemologists on staff</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">💰</div>
+                        <div class="feature-text">
+                            <h4>Fair Market Pricing</h4>
+                            <p>Transparent, competitive valuations</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🛡️</div>
+                        <div class="feature-text">
+                            <h4>Secure Transactions</h4>
+                            <p>Fully licensed and insured</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-image">
+                <div class="image-placeholder"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="contact-header">
+            <h2>Visit Our Stores</h2>
+            <p>Two convenient locations to serve you</p>
+        </div>
+        <div class="locations-grid">
+            <!-- Colorado Springs Location -->
+            <div class="location-card">
+                <div class="location-header">
+                    <h3>🇺🇸 Colorado Springs</h3>
+                    <span class="location-badge">Flagship Store</span>
+                </div>
+                <div class="location-details">
+                    <div class="store-hours">
+                        <h4>Store Hours</h4>
+                        <p>Monday - Friday: 9:00 AM - 7:00 PM<br>
+                        Saturday: 9:00 AM - 6:00 PM<br>
+                        Sunday: 11:00 AM - 5:00 PM</p>
+                    </div>
+                    <div class="store-contact">
+                        <h4>Contact Info</h4>
+                        <p>📍 123 Luxury Lane<br>Colorado Springs, CO 80901</p>
+                        <p>📞 <span class="phone-number">(719) 555-0123</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edinburgh Location -->
+            <div class="location-card">
+                <div class="location-header">
+                    <h3>🇬🇧 Edinburgh</h3>
+                    <span class="location-badge">UK Branch</span>
+                </div>
+                <div class="location-details">
+                    <div class="store-hours">
+                        <h4>Store Hours</h4>
+                        <p>Monday - Friday: 10:00 AM - 6:00 PM<br>
+                        Saturday: 10:00 AM - 5:00 PM<br>
+                        Sunday: 12:00 PM - 4:00 PM</p>
+                    </div>
+                    <div class="store-contact">
+                        <h4>Contact Info</h4>
+                        <p>📍 45 Royal Mile<br>Edinburgh, Scotland EH1 1RE</p>
+                        <p>📞 <span class="phone-number">+44 131 555-0789</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">Golden Hunt Jewelry</div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Golden Hunt Jewelry. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to top button -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Scroll to top">
+        <span class="scroll-icon">↑</span>
+    </button>
+
+    <!-- Chat Support Widget -->
+    <div id="chatWidget" class="chat-widget">
+        <div id="chatToggle" class="chat-toggle">
+            <div class="chat-icon">
+                <span class="icon-chat">💬</span>
+                <span class="icon-close">✕</span>
+            </div>
+            <div class="chat-pulse"></div>
+        </div>
+        <div id="chatContainer" class="chat-container">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar">👨‍💼</div>
+                    <div class="chat-details">
+                        <div class="chat-name">Golden Hunt Jewelry</div>
+                        <div class="chat-status">Expert Assistance Available</div>
+                    </div>
+                </div>
+                <button id="chatMinimize" class="chat-minimize">−</button>
+            </div>
+            <div id="chatMessages" class="chat-messages">
+                <div class="message bot-message">
+                    <div class="message-avatar">👨‍💼</div>
+                    <div class="message-content">
+                        <p>Hi! I'm here to help with questions about buying or selling jewelry. What can I help you with?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-quick-actions">
+                <button class="quick-action" data-action="hours">Store Hours</button>
+                <button class="quick-action" data-action="services">Our Services</button>
+                <button class="quick-action" data-action="contact">Contact Info</button>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+                <button id="chatSend" class="chat-send">
+                    <span class="send-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
