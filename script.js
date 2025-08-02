@@ -770,16 +770,37 @@ class GoldenHuntChatbot {
             const nameMatch = input.match(/(?:my name is|i'm)\s+([a-zA-Z]+)/);
             if (nameMatch) {
                 this.userName = nameMatch[1];
-                return `Nice to meet you, ${this.userName}! How can I help you today?`;
+                return `Nice to meet you, ${this.userName}! I'm Alex, your jewelry expert. How can I assist you today?`;
             }
         }
         
-        // Greetings
-        if (input.includes('hello') || input.includes('hi') || input.includes('hey') || input.includes('good morning') || input.includes('good afternoon')) {
+        // General conversation and greetings
+        if (input.includes('how are you') || input.includes('how are things') || input.includes('how\'s it going')) {
+            const responses = [
+                "I'm doing great, thank you for asking! I'm excited to help you with your jewelry needs today.",
+                "I'm wonderful! Always happy to chat about our beautiful collection. What can I help you with?",
+                "Excellent, thanks for asking! I've been helping clients find their perfect pieces all day. How can I assist you?"
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        // Greetings with time context
+        if (input.includes('good morning')) {
+            return "Good morning! Starting the day with jewelry always makes it better. How can I help you today?";
+        }
+        if (input.includes('good afternoon')) {
+            return "Good afternoon! Hope your day is going well. What brings you to Golden Hunt Jewelry today?";
+        }
+        if (input.includes('good evening')) {
+            return "Good evening! There's always time for luxury. What can I help you discover today?";
+        }
+        
+        // Basic greetings
+        if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
             const greetings = [
-                "Hi there! What can I help you with today?",
-                "Hello! I'm here to help with your jewelry needs.",
-                "Hi! What questions do you have about our services?"
+                "Hi there! I'm Alex, your jewelry expert. What can I help you with today?",
+                "Hello! Welcome to Golden Hunt Jewelry. How may I assist you?",
+                "Hi! I'm here to help you find the perfect piece. What are you looking for?"
             ];
             return greetings[Math.floor(Math.random() * greetings.length)];
         }
@@ -881,8 +902,249 @@ class GoldenHuntChatbot {
             return this.userName ? `Goodbye, ${this.userName}! Thanks for chatting. We look forward to seeing you soon!` : "Thanks for chatting! Have a great day and we look forward to seeing you soon!";
         }
         
-        // Default helpful response
-        return "I can help with questions about buying or selling jewelry, store hours, locations, services, or pricing. What would you like to know?";
+        // Personal questions about the bot
+        if (input.includes('who are you') || input.includes('what are you') || input.includes('are you real') || input.includes('are you a bot')) {
+            return "I'm Alex, your virtual jewelry expert at Golden Hunt Jewelry! While I'm an AI assistant, I'm here to provide expert guidance on our collections, services, and help you with any questions you have about fine jewelry.";
+        }
+
+        // What's your name
+        if (input.includes('your name') || input.includes('who am i talking to')) {
+            return "I'm Alex, your dedicated jewelry expert at Golden Hunt Jewelry! How can I assist you today?";
+        }
+
+        // Small talk about jewelry
+        if (input.includes('like jewelry') || input.includes('love jewelry')) {
+            return "I share your passion for fine jewelry! There's something magical about each piece, whether it's a stunning diamond engagement ring or a vintage gold necklace. What kind of pieces interest you the most?";
+        }
+
+        // Handling compliments
+        if (input.includes('you are helpful') || input.includes('you are great') || input.includes('you are good') || input.includes('you are amazing')) {
+            return this.userName ? 
+                `Thank you, ${this.userName}! I really enjoy helping our clients find their perfect pieces. What else can I assist you with?` :
+                "Thank you! I really enjoy helping our clients find their perfect pieces. What else can I assist you with?";
+        }
+
+        // Fun facts about jewelry
+        if (input.includes('fun fact') || input.includes('tell me something') || input.includes('interesting fact')) {
+            const funFacts = [
+                "Did you know? The word 'carat' comes from the carob seed, which was used as a standard weight for trading gold in ancient times!",
+                "Here's something interesting: Diamonds aren't rare in nature - they're rare in high quality. Only about 30% of diamonds mined are gem-quality!",
+                "Fun fact: The largest cut diamond in the world is the Golden Jubilee Diamond, weighing 545.67 carats!",
+                "Interesting fact: Pure 24K gold is actually too soft for jewelry - that's why we mix it with other metals to make it more durable!",
+                "Did you know? Pearls are the only gemstones made by living creatures!",
+                "Here's a fascinating fact: The tradition of engagement rings dates back to ancient Egypt, where circles symbolized eternity!",
+                "Did you know? The rarest gemstone in the world isn't a diamond - it's red beryl, which is over 1,000 times rarer!",
+                "Fun fact: The largest gold nugget ever found was the 'Welcome Stranger' in Australia, weighing 2,316 troy ounces!"
+            ];
+            return funFacts[Math.floor(Math.random() * funFacts.length)];
+        }
+
+        // Handle emotional expressions
+        if (input.includes('excited') || input.includes('can\'t wait')) {
+            return this.userName ? 
+                `I share your excitement, ${this.userName}! There's nothing quite like finding that perfect piece of jewelry. What are you most looking forward to?` :
+                "I share your excitement! There's nothing quite like finding that perfect piece of jewelry. What are you most looking forward to?";
+        }
+
+        // Handle expressions of uncertainty
+        if (input.includes('not sure') || input.includes('confused') || input.includes('don\'t know what')) {
+            return "That's completely normal! Jewelry can be overwhelming with so many beautiful options. Let's narrow it down - are you looking for something specific like rings, necklaces, or perhaps an investment piece?";
+        }
+
+        // Handle budget discussions sensitively
+        if (input.includes('expensive') || input.includes('cost') || input.includes('budget') || input.includes('afford')) {
+            return "We have beautiful pieces across all price points, and I'm happy to help you find something that matches both your style and budget. Would you like to explore specific price ranges?";
+        }
+
+        // Handle specific jewelry preferences
+        if (input.includes('favorite') || input.includes('prefer')) {
+            if (input.includes('gold') || input.includes('silver') || input.includes('platinum')) {
+                return "Each precious metal has its own unique beauty! Gold offers warmth and timeless elegance, silver provides versatile sophistication, and platinum represents the ultimate in luxury. Which qualities matter most to you?";
+            }
+            if (input.includes('stone') || input.includes('gem') || input.includes('diamond')) {
+                return "Every gemstone has its own character and story! While diamonds are classic, colored gems like sapphires, emeralds, and rubies can be equally stunning. What draws you to particular stones?";
+            }
+        }
+
+        // Handle specific occasion inquiries
+        if (input.includes('anniversary') || input.includes('birthday') || input.includes('special occasion')) {
+            return "Special occasions deserve special pieces! I'd be happy to help you find something meaningful. What kind of message or feeling would you like the piece to convey?";
+        }
+
+        // Handle investment inquiries
+        if (input.includes('investment') || input.includes('value') || input.includes('worth')) {
+            return "Fine jewelry can indeed be a wonderful investment. While pieces like gold bars and certified diamonds typically hold value well, I always recommend choosing something you'll also love wearing or displaying. Would you like to explore our investment-grade pieces?";
+        }
+
+        // Handle care and maintenance questions
+        if (input.includes('clean') || input.includes('care') || input.includes('maintain')) {
+            return "Proper care is essential for keeping your jewelry beautiful! Each piece needs specific care - for example, gold can be cleaned with mild soap and warm water, while pearls need special attention. Would you like specific care tips for your pieces?";
+        }
+
+        // Handle comparison questions
+        if (input.includes('difference between') || input.includes('better') || input.includes('compare')) {
+            return "That's a great question! Each piece has its unique characteristics and benefits. To give you the most helpful comparison, could you tell me specifically what you're looking to compare?";
+        }
+
+        // Handle requests for recommendations
+        if (input.includes('recommend') || input.includes('suggest') || input.includes('what should')) {
+            return "I'd love to make some personalized recommendations! To help you best, could you tell me a bit about the occasion, style preferences, or any specific requirements you have in mind?";
+        }
+
+        // Handle questions about authenticity and certification
+        if (input.includes('authentic') || input.includes('real') || input.includes('certified') || input.includes('fake')) {
+            return "We take authenticity very seriously at Golden Hunt Jewelry. All our pieces come with proper certification, and we use industry-standard testing methods. Would you like to know more about our authentication process?";
+        }
+
+        // Handle questions about current trends
+        if (input.includes('trending') || input.includes('popular') || input.includes('fashion') || input.includes('style')) {
+            return "Current jewelry trends include mixed metal pieces, sustainable materials, and vintage-inspired designs. However, I always recommend choosing pieces that speak to your personal style rather than just following trends. What styles catch your eye?";
+        }
+
+        // Handle expressions of indecision between options
+        if ((input.includes('or') || input.includes('versus') || input.includes('vs')) && 
+            (input.includes('should i') || input.includes('better to'))) {
+            return "Making choices between beautiful pieces can be challenging! To help you make the best decision, let's consider a few factors: your lifestyle, when you'll wear it, and your personal style preferences. Which aspects are most important to you?";
+        }
+
+        // Handle questions about gift giving
+        if (input.includes('gift') || input.includes('present') || (input.includes('buying') && input.includes('for'))) {
+            return "Jewelry makes such a thoughtful gift! To help you find the perfect piece, could you tell me a bit about the recipient? Things like their style preferences, what kind of jewelry they usually wear, or the occasion can help us make the best choice.";
+        }
+
+        // Handle questions about customization
+        if (input.includes('custom') || input.includes('personalize') || input.includes('make my own')) {
+            return "Creating custom pieces is one of our specialties! We can help you design something truly unique, from engagement rings to family heirlooms. What kind of custom piece did you have in mind?";
+        }
+
+        // Handle questions about jewelry history
+        if (input.includes('history') || input.includes('vintage') || input.includes('antique') || input.includes('old')) {
+            return "The history of jewelry is fascinating! Each era has its own distinctive styles and techniques. Are you interested in a particular period or type of historical jewelry? We have expertise in pieces from various eras.";
+        }
+
+        // Handle questions about gemstone meanings
+        if (input.includes('meaning') || input.includes('symbolize') || input.includes('represent')) {
+            return "Gemstones and jewelry often carry beautiful meanings! For example, sapphires symbolize wisdom and loyalty, while roses represent love. Would you like to know about the meaning of a specific stone or piece?";
+        }
+
+        // Handle questions about jewelry storage
+        if (input.includes('store') || input.includes('keep') || input.includes('box') || input.includes('safe')) {
+            return "Proper storage is crucial for preserving your jewelry! Different pieces need different care - for instance, pearls should be stored separately from harder gems, and silver needs anti-tarnish protection. Would you like specific storage tips for your pieces?";
+        }
+
+        // Handle questions about jewelry insurance
+        if (input.includes('insurance') || input.includes('insure') || input.includes('protected')) {
+            return "Protecting your investment is important! While we don't provide insurance directly, we can provide detailed appraisals and documentation for insurance purposes. Would you like to know more about getting your pieces appraised?";
+        }
+
+        // Handle questions about repairs
+        if (input.includes('repair') || input.includes('fix') || input.includes('broken') || input.includes('damaged')) {
+            return "We offer expert repair services for all types of jewelry! From simple chain repairs to complex restoration work, our skilled craftsmen can help. What type of repair service do you need?";
+        }
+
+        // Handle questions about metal purity
+        if (input.includes('karat') || input.includes('pure') || input.includes('quality') || input.includes('grade')) {
+            return "We deal exclusively in fine jewelry with verified purity. For gold, we offer 10K to 24K, and our platinum is 950-grade. Each piece comes with certification of authenticity. Would you like to learn more about metal purity standards?";
+        }
+
+        // Handle questions about payment options
+        if (input.includes('payment') || input.includes('pay') || input.includes('finance') || input.includes('credit')) {
+            return "We offer various payment options to make your purchase convenient! This includes major credit cards, financing plans for qualified buyers, and layaway options. Would you like details about a specific payment method?";
+        }
+
+        // Handle questions about return policy
+        if (input.includes('return') || input.includes('exchange') || input.includes('refund')) {
+            return "We want you to be completely satisfied with your purchase! Our return policy allows returns within 30 days with original documentation. Would you like me to explain our return process in detail?";
+        }
+
+        // Handle casual conversation starters
+        if (input.includes('what\'s up') || input.includes('wassup') || input.includes('what are you up to')) {
+            const casualResponses = [
+                "Just helping our lovely clients find their dream jewelry! What brings you by today? 💎",
+                "Oh you know, just hanging out with some gorgeous diamonds and gems! What can I help you discover? ✨",
+                "Having a great day chatting about beautiful jewelry! What's on your mind? 💫"
+            ];
+            return casualResponses[Math.floor(Math.random() * casualResponses.length)];
+        }
+
+        // Handle expressions of frustration or past experiences
+        if (input.includes('hate') || input.includes('bad experience') || input.includes('terrible') || input.includes('awful')) {
+            return "Oh no, I'm sorry to hear that! 😟 Everyone deserves a positive jewelry experience. Let me help make things right - what kind of experience are you looking for?";
+        }
+
+        // Handle casual compliments about jewelry
+        if (input.includes('pretty') || input.includes('beautiful') || input.includes('gorgeous') || input.includes('love it')) {
+            const admirationResponses = [
+                "Right?! 😍 It's absolutely stunning! Would you like to know more about the piece?",
+                "I totally agree! 🤩 The craftsmanship is amazing. What caught your eye about it?",
+                "It's breathtaking, isn't it? ✨ I can tell you have great taste! Would you like to see similar pieces?"
+            ];
+            return admirationResponses[Math.floor(Math.random() * admirationResponses.length)];
+        }
+
+        // Handle casual browsing
+        if (input.includes('just looking') || input.includes('browsing') || input.includes('window shopping')) {
+            return "That's totally cool! 😊 Sometimes it's fun just to explore and get inspired. If anything catches your eye, just let me know - I love chatting about our pieces!";
+        }
+
+        // Handle expressions of surprise about prices
+        if (input.includes('wow') || input.includes('whoa') || input.includes('omg') || input.includes('oh my god')) {
+            return "I know, right? 😊 Whether it's the stunning design or the price point, jewelry can definitely spark reactions! Want to talk about what you're seeing?";
+        }
+
+        // Handle casual date-related queries
+        if (input.includes('date') || input.includes('romantic') || input.includes('proposal')) {
+            return "Ooh, how exciting! 💕 Nothing adds sparkle to a special moment like the perfect piece of jewelry. Want to tell me more about what you're planning?";
+        }
+
+        // Handle casual style discussions
+        if (input.includes('my style') || input.includes('not my thing') || input.includes('too flashy') || input.includes('too simple')) {
+            return "Hey, personal style is totally unique to you! 🌟 There's no right or wrong - it's all about finding pieces that make YOU feel amazing. What kind of styles usually catch your eye?";
+        }
+
+        // Handle indecisive browsing
+        if (input.includes('maybe') || input.includes('might') || input.includes('thinking about')) {
+            return "Take your time! 😊 It's good to explore options. I'm here whenever you want to bounce ideas around or need more details about anything!";
+        }
+
+        // Handle casual time-related queries
+        if (input.includes('how long') || input.includes('wait time') || input.includes('when will')) {
+            return "Let me check that for you! ⏱️ Timing can vary depending on what you're looking for. Mind sharing a bit more about what you're interested in?";
+        }
+
+        // Handle expressions of being overwhelmed
+        if (input.includes('overwhelming') || input.includes('too many') || input.includes('so much')) {
+            return "I totally get it! 😅 There's a lot to take in with jewelry. Let's break it down into smaller bits - what's the most important thing you're looking for?";
+        }
+
+        // Handle casual price inquiries
+        if (input.includes('how much') || input.includes('price range') || input.includes('costs')) {
+            return "Let's find something that works for you! 💫 We have beautiful pieces across different price points. What kind of range did you have in mind?";
+        }
+
+        // Handle expressions of urgency
+        if (input.includes('asap') || input.includes('urgent') || input.includes('hurry') || input.includes('quick')) {
+            return "Don't worry, I've got you! 🏃‍♂️ Let's find what you need quickly. What's the occasion you're shopping for?";
+        }
+
+        // Handle casual opinions
+        if (input.includes('what do you think') || input.includes('your opinion') || input.includes('would you')) {
+            return "Well, in my experience... 🤔 Actually, why don't you tell me what YOU like about it? That way I can better understand your style and give more personalized suggestions!";
+        }
+
+        // Handle "why" questions about the business
+        if (input.startsWith('why') && (input.includes('golden hunt') || input.includes('your') || input.includes('you'))) {
+            return "At Golden Hunt Jewelry, we pride ourselves on our 25+ years of expertise, international presence, and commitment to exceptional quality. We believe every piece of jewelry tells a story, and we're here to help you find or create yours.";
+        }
+
+        // Default helpful response with personality
+        const defaultResponses = [
+            "I'd love to help you explore our collection! We can discuss buying, selling, custom designs, or anything else jewelry-related. What interests you?",
+            "I'm here to assist with all your jewelry needs - whether you're buying, selling, or just curious about our services. What would you like to know?",
+            "From engagement rings to gold bars, I'm knowledgeable about all our products and services. How can I guide you today?",
+            "I can help you with anything from store hours to detailed product information. What aspect of Golden Hunt Jewelry would you like to explore?"
+        ];
+        return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
     }
     
     handleQuickAction(actionType) {
