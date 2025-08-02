@@ -466,7 +466,6 @@ body.night-mode .navbar.scrolled {
     .hero-content {
         z-index: 3;
         position: relative;
-        padding-top: 120px;
     }
 }
 
@@ -493,7 +492,6 @@ body.night-mode .navbar.scrolled {
     z-index: 3;
     max-width: 700px;
     padding: 0 2rem;
-    padding-top: 80px;
 }
 
 .hero-subtitle {
@@ -504,6 +502,7 @@ body.night-mode .navbar.scrolled {
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
     font-weight: 500;
     animation: fadeInUp 1s ease-out 0.5s both;
+    margin-top: 3rem;
 }
 
 .hero-title {
@@ -2240,9 +2239,6 @@ body.night-mode .typing-indicator {
 }
 
 @media (max-width: 480px) {
-    .hero-content {
-        padding-top: 140px;
-    }
     .chat-container {
         width: calc(100vw - 20px);
         max-width: 280px;
