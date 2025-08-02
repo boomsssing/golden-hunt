@@ -495,13 +495,14 @@ body.night-mode .navbar.scrolled {
 }
 
 .hero-subtitle {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     color: var(--gold-primary);
-    margin-bottom: 0.8rem;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
-    font-weight: 500;
+    margin-bottom: 1rem;
+    letter-spacing: 1.5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    font-weight: 600;
     animation: fadeInUp 1s ease-out 0.5s both;
+    text-transform: uppercase;
 }
 
 .hero-title {
@@ -1559,6 +1560,11 @@ footer {
     .nav-links { display: none; }
     .nav-toggle { display: flex; }
     .hero-title { font-size: 3rem; }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        letter-spacing: 1.2px;
+    }
     .hero-buttons { flex-direction: column; align-items: center; }
 
     .inventory-showcase { grid-template-columns: 1fr; }
@@ -2238,6 +2244,12 @@ body.night-mode .typing-indicator {
 }
 
 @media (max-width: 480px) {
+    .hero-subtitle {
+        font-size: 1rem;
+        letter-spacing: 1px;
+        margin-bottom: 0.8rem;
+        padding: 0 0.5rem;
+    }
     .chat-container {
         width: calc(100vw - 20px);
         max-width: 280px;
