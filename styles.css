@@ -1499,11 +1499,11 @@ body.night-mode .author-name {
 
 .shared-contact-card {
     background: var(--gold-primary);
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
     border-radius: 12px;
     text-align: center;
     max-width: 400px;
-    width: 100%;
+    width: 95%;
     box-shadow: var(--shadow-luxury);
 }
 
@@ -1537,6 +1537,9 @@ body.night-mode .author-name {
     color: var(--black);
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    margin: 0 auto;
+    word-break: break-all;
 }
 
 .email-contact:hover {
@@ -2319,6 +2322,23 @@ body.night-mode .typing-indicator {
 }
 
 @media (max-width: 480px) {
+    .shared-contact-card {
+        padding: 1.2rem 0.8rem;
+    }
+    
+    .email-contact {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        max-width: 95%;
+    }
+    
+    .contact-icon {
+        font-size: 1rem;
+    }
+    
+    .contact-text {
+        font-size: 0.75rem;
+    }
     .chat-container {
         width: calc(100vw - 20px);
         max-width: 280px;
