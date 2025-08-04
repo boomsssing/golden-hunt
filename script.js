@@ -653,10 +653,13 @@ class GoldenHuntChatbot {
         this.isTyping = false;
         this.conversationContext = {};
         this.userName = null;
+        this.sessionId = Date.now(); // Unique session ID for this chat
+        this.isConnectedToAdmin = false; // Track admin connection status
         
         this.initializeElements();
         this.bindEvents();
         this.initializeKnowledgeBase();
+        this.setupAdminConnection();
     }
     
     initializeElements() {
@@ -709,6 +712,19 @@ class GoldenHuntChatbot {
         
         if (this.isOpen) {
             this.chatInput.focus();
+            // Notify admin of chat session start
+            this.notifyAdmin({
+                type: 'chatStart',
+                sessionId: this.sessionId,
+                timestamp: new Date().toISOString()
+            });
+        } else {
+            // Notify admin of chat session end
+            this.notifyAdmin({
+                type: 'chatEnd',
+                sessionId: this.sessionId,
+                timestamp: new Date().toISOString()
+            });
         }
     }
     
@@ -719,6 +735,22 @@ class GoldenHuntChatbot {
         this.addMessage(userInput, 'user');
         this.chatInput.value = '';
         
+        // Always notify admin portal of new message for real-time communication
+        this.notifyAdmin({
+            type: 'newMessage',
+            sessionId: this.sessionId,
+            message: userInput,
+            sender: 'user',
+            timestamp: new Date().toISOString()
+        });
+        
+        // If connected to admin, don't process with AI - let admin handle it
+        if (this.isConnectedToAdmin) {
+            console.log('User connected to admin - message sent to live agent');
+            return; // Don't process with AI when admin is connected
+        }
+        
+        // Only process with AI if no admin is connected
         await this.processUserMessage(userInput);
     }
     
@@ -749,6 +781,17 @@ class GoldenHuntChatbot {
         messageDiv.appendChild(messageContent);
         this.chatMessages.appendChild(messageDiv);
         
+        // Notify admin portal of new message
+        if (sender === 'bot') {
+            this.notifyAdmin({
+                type: 'newMessage',
+                sessionId: this.sessionId,
+                message: content,
+                sender: 'bot',
+                timestamp: new Date().toISOString()
+            });
+        }
+        
         this.scrollToBottom();
     }
     
@@ -765,6 +808,35 @@ class GoldenHuntChatbot {
     }
     
     generateResponse(input) {
+        // Check if user wants to speak to a live agent
+        if (input.toLowerCase().includes('speak to') || 
+            input.toLowerCase().includes('talk to') || 
+            input.toLowerCase().includes('live agent') || 
+            input.toLowerCase().includes('real person') ||
+            input.toLowerCase().includes('customer service') ||
+            input.toLowerCase().includes('customer support') ||
+            input.toLowerCase().includes('live chat support') ||
+            input.toLowerCase().includes('live chat') ||
+            input.toLowerCase().includes('live support') ||
+            input.toLowerCase().includes('representative') ||
+            input.toLowerCase().includes('speak with someone') ||
+            input.toLowerCase().includes('talk with someone') ||
+            input.toLowerCase().includes('human agent') ||
+            input.toLowerCase().includes('connect me') ||
+            input.toLowerCase().includes('transfer me')) {
+            
+            // Notify admin of live support request
+            this.notifyAdmin({
+                type: 'liveSupport',
+                sessionId: this.sessionId,
+                message: input,
+                timestamp: new Date().toISOString(),
+                urgency: 'high'
+            });
+            
+            return "I'll connect you with a live customer support agent right away. Please wait a moment while I notify our team. In the meantime, feel free to describe what you need help with.";
+        }
+
         // Handle name introductions
         if (input.includes('my name is') || input.includes("i'm ")) {
             const nameMatch = input.match(/(?:my name is|i'm)\s+([a-zA-Z]+)/);
@@ -1204,6 +1276,320 @@ class GoldenHuntChatbot {
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    setupAdminConnection() {
+        // Real-time connection using multiple methods for instant communication
+        this.adminConnection = {
+            send: (message) => {
+                // Method 1: Direct reference (if admin portal is open in same window)
+                if (window.adminPortal) {
+                    window.adminPortal.receiveCustomerMessage(message);
+                }
+                
+                // Method 2: Cross-tab communication via BroadcastChannel
+                if (window.BroadcastChannel) {
+                    try {
+                        if (!this.broadcastChannel) {
+                            this.broadcastChannel = new BroadcastChannel('golden-hunt-chat');
+                        }
+                        this.broadcastChannel.postMessage({
+                            type: 'customerMessage',
+                            data: message
+                        });
+                    } catch (e) {
+                        console.log('BroadcastChannel not available');
+                    }
+                }
+                
+                // Method 3: localStorage as fallback (with instant notification)
+                const pendingMessages = JSON.parse(localStorage.getItem('pendingAdminMessages') || '[]');
+                pendingMessages.push(message);
+                localStorage.setItem('pendingAdminMessages', JSON.stringify(pendingMessages));
+                
+                // Trigger custom event for instant notification
+                window.dispatchEvent(new CustomEvent('adminMessageReceived', { detail: message }));
+            }
+        };
+
+        // Listen for admin responses via multiple channels
+        // Method 1: BroadcastChannel for instant cross-tab communication
+        if (window.BroadcastChannel) {
+            try {
+                this.broadcastChannel = new BroadcastChannel('golden-hunt-chat');
+                this.broadcastChannel.onmessage = (event) => {
+                    if (event.data.type === 'adminResponse' && event.data.data.sessionId === this.sessionId) {
+                        this.handleAdminResponse(event.data.data);
+                    }
+                };
+            } catch (e) {
+                console.log('BroadcastChannel not available');
+            }
+        }
+        
+        // Method 2: Storage events for cross-tab compatibility
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'adminResponse') {
+                const response = JSON.parse(e.newValue);
+                if (response.sessionId === this.sessionId) {
+                    this.handleAdminResponse(response);
+                }
+            }
+        });
+        
+        // Method 3: Custom events for same-window communication
+        window.addEventListener('customerResponseReceived', (e) => {
+            if (e.detail.sessionId === this.sessionId) {
+                this.handleAdminResponse(e.detail);
+            }
+        });
+        
+        // Set up polling for ultra-fast response detection
+        this.setupResponsePolling();
+    }
+    
+    setupResponsePolling() {
+        // Ultra-fast polling for admin responses (every 100ms for instant feel)
+        this.responsePollingInterval = setInterval(() => {
+            const response = localStorage.getItem('adminResponse');
+            if (response) {
+                try {
+                    const parsedResponse = JSON.parse(response);
+                    if (parsedResponse.sessionId === this.sessionId) {
+                        this.handleAdminResponse(parsedResponse);
+                        localStorage.removeItem('adminResponse'); // Clear after handling
+                    }
+                } catch (e) {
+                    // Ignore parsing errors
+                }
+            }
+        }, 100); // 100ms for lightning-fast response
+    }
+
+    notifyAdmin(message) {
+        // Add customer info to message
+        const enrichedMessage = {
+            ...message,
+            customerInfo: {
+                name: this.userName || 'Anonymous',
+                sessionId: this.sessionId,
+                location: window.location.href,
+                userAgent: navigator.userAgent
+            }
+        };
+
+        // Send to admin portal
+        this.adminConnection.send(enrichedMessage);
+    }
+
+    handleAdminResponse(response) {
+        // Check if this message has already been processed
+        const existingMessages = Array.from(this.chatMessages.children);
+        const isDuplicate = existingMessages.some(msg => {
+            const content = msg.querySelector('.message-content p');
+            const time = msg.querySelector('.message-time');
+            return content && time && 
+                   content.textContent === response.message &&
+                   time.textContent === new Date(response.timestamp).toLocaleTimeString();
+        });
+        
+        if (isDuplicate) {
+            console.log('Duplicate message detected, skipping');
+            return;
+        }
+        
+        // Play notification sound for admin responses
+        this.playNotificationSound();
+        
+        switch (response.type) {
+            case 'adminMessage':
+                // Hide typing indicator if showing
+                this.hideTyping();
+                // Add admin message to chat with special styling and instant animation
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot-message admin-live';
+                messageDiv.style.opacity = '0';
+                messageDiv.style.transform = 'translateY(20px)';
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">👨‍💼</div>
+                    <div class="message-content">
+                        <div class="admin-badge">🔴 Live Agent</div>
+                        <p>${response.message}</p>
+                        <div class="message-time">${new Date(response.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                `;
+                this.chatMessages.appendChild(messageDiv);
+                
+                // Animate message in instantly
+                setTimeout(() => {
+                    messageDiv.style.transition = 'all 0.2s ease';
+                    messageDiv.style.opacity = '1';
+                    messageDiv.style.transform = 'translateY(0)';
+                }, 10);
+                
+                this.scrollToBottom();
+                break;
+                
+            case 'adminTyping':
+                // Show admin typing indicator with live agent badge
+                this.showAdminTyping();
+                setTimeout(() => this.hideTyping(), 3000);
+                break;
+                
+            case 'adminJoined':
+                // Check if we already have a connection message
+                const existingConnection = Array.from(this.chatMessages.children).find(msg => 
+                    msg.classList.contains('admin-connected')
+                );
+                
+                if (existingConnection) {
+                    console.log('Connection message already exists, skipping');
+                    return;
+                }
+                
+                // Show connection established message with celebration effect
+                this.isConnectedToAdmin = true;
+                this.updateChatStatus();
+                
+                const joinedDiv = document.createElement('div');
+                joinedDiv.className = 'message bot-message system-message admin-connected';
+                joinedDiv.innerHTML = `
+                    <div class="message-avatar">🟢</div>
+                    <div class="message-content">
+                        <div class="connection-success">
+                            <p><strong>🎉 ADMIN CONNECTED!</strong></p>
+                            <p>You're now connected to a live customer support agent!</p>
+                            <p class="connection-time">Connected at ${new Date().toLocaleTimeString()}</p>
+                        </div>
+                    </div>
+                `;
+                this.chatMessages.appendChild(joinedDiv);
+                this.scrollToBottom();
+                
+                // Add celebratory animation
+                joinedDiv.style.animation = 'successPulse 0.6s ease-out';
+                
+                // Also play celebration sound
+                this.playConnectionSound();
+                break;
+                
+            case 'adminLeft':
+                // Show disconnection message
+                this.isConnectedToAdmin = false;
+                this.updateChatStatus();
+                
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'message bot-message system-message admin-disconnected';
+                leftDiv.innerHTML = `
+                    <div class="message-avatar">🔴</div>
+                    <div class="message-content">
+                        <p><strong>Live agent has left the chat</strong></p>
+                        <p>Our AI assistant will continue to help you with any additional questions.</p>
+                        <p class="disconnection-time">Disconnected at ${new Date().toLocaleTimeString()}</p>
+                    </div>
+                `;
+                this.chatMessages.appendChild(leftDiv);
+                this.scrollToBottom();
+                break;
+        }
+    }
+    
+    updateChatStatus() {
+        // Update chat header to show connection status
+        const chatStatusElement = document.querySelector('.chat-status');
+        const chatHeaderInfo = document.querySelector('.chat-header-info .chat-details');
+        
+        if (this.isConnectedToAdmin) {
+            if (chatHeaderInfo) {
+                chatHeaderInfo.innerHTML = `
+                    <div class="chat-name">Golden Hunt Jewelry</div>
+                    <div class="chat-status" style="color: #4CAF50; font-weight: bold;">
+                        🔴 Live Agent Connected
+                    </div>
+                `;
+            }
+        } else {
+            if (chatHeaderInfo) {
+                chatHeaderInfo.innerHTML = `
+                    <div class="chat-name">Golden Hunt Jewelry</div>
+                    <div class="chat-status">Expert Assistance Available</div>
+                `;
+            }
+        }
+    }
+    
+    showAdminTyping() {
+        if (this.isTyping) return;
+        this.isTyping = true;
+        
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message typing-indicator admin-typing';
+        typingDiv.innerHTML = `
+            <div class="message-avatar">👨‍💼</div>
+            <div class="typing-container">
+                <div class="admin-badge">🔴 Live Agent</div>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <div class="typing-text">is typing...</div>
+            </div>
+        `;
+        
+        this.chatMessages.appendChild(typingDiv);
+        this.scrollToBottom();
+    }
+    
+    playNotificationSound() {
+        // Create and play notification sound for admin responses
+        try {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            
+            oscillator.frequency.setValueAtTime(800, context.currentTime);
+            oscillator.frequency.setValueAtTime(600, context.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, context.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.2);
+            
+            oscillator.start(context.currentTime);
+            oscillator.stop(context.currentTime + 0.2);
+        } catch (e) {
+            // Fallback: use existing notification sound or silent
+            console.log('Could not play notification sound');
+        }
+    }
+    
+    playConnectionSound() {
+        // Play celebration sound when admin connects
+        try {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Create a sequence of ascending tones for celebration
+            const frequencies = [523, 659, 784, 880]; // C, E, G, A notes
+            
+            frequencies.forEach((freq, index) => {
+                const oscillator = context.createOscillator();
+                const gainNode = context.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(context.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, context.currentTime + index * 0.1);
+                gainNode.gain.setValueAtTime(0.2, context.currentTime + index * 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + index * 0.1 + 0.15);
+                
+                oscillator.start(context.currentTime + index * 0.1);
+                oscillator.stop(context.currentTime + index * 0.1 + 0.15);
+            });
+        } catch (e) {
+            console.log('Could not play connection sound');
+        }
+    }
 }
 
 // Initialize the chatbot when the page loads
@@ -1265,6 +1651,157 @@ style.textContent = `
     @media (max-width: 768px) {
         .nav-links {
             display: none;
+        }
+    }
+    
+    /* Enhanced Chat Animations for Real-time Communication */
+    .admin-live {
+        border-left: 3px solid #D4AF37;
+        animation: newMessageGlow 0.5s ease-out;
+    }
+    
+    .admin-badge {
+        background: linear-gradient(45deg, #ff4444, #ff6666);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: inline-block;
+        animation: livePulse 2s infinite;
+    }
+    
+    .connection-success {
+        background: linear-gradient(135deg, #e8f5e8, #f0f9f0);
+        border: 1px solid #4CAF50;
+        border-radius: 8px;
+        padding: 12px;
+    }
+    
+    .connection-time, .disconnection-time {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 5px;
+        font-style: italic;
+    }
+    
+    .admin-typing .typing-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .typing-text {
+        font-size: 0.8rem;
+        color: #666;
+        font-style: italic;
+    }
+    
+    .admin-connected {
+        animation: successSlideIn 0.5s ease-out;
+    }
+    
+    .admin-disconnected {
+        animation: fadeInScale 0.3s ease-out;
+    }
+    
+    @keyframes newMessageGlow {
+        0% {
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+            transform: scale(1);
+        }
+        50% {
+            box-shadow: 0 0 0 10px rgba(212, 175, 55, 0.3);
+            transform: scale(1.02);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes successPulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        50% {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes livePulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+    
+    @keyframes successSlideIn {
+        0% {
+            transform: translateX(-100%) scale(0.9);
+            opacity: 0;
+        }
+        50% {
+            transform: translateX(10px) scale(1.02);
+            opacity: 0.8;
+        }
+        100% {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeInScale {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    /* Enhanced typing indicator */
+    .typing-dots {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+    }
+    
+    .typing-dot {
+        width: 6px;
+        height: 6px;
+        background: #D4AF37;
+        border-radius: 50%;
+        animation: typingDot 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(1) {
+        animation-delay: -0.32s;
+    }
+    
+    .typing-dot:nth-child(2) {
+        animation-delay: -0.16s;
+    }
+    
+    @keyframes typingDot {
+        0%, 80%, 100% {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        40% {
+            transform: scale(1.2);
+            opacity: 1;
         }
     }
 `;

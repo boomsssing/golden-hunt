@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Hunt Jewelry - Admin Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Admin-specific styles */
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .admin-title {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #D4AF37;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .inquiries-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .inquiries-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inquiry-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .inquiry-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inquiry-item:last-child {
+            border-bottom: none;
+        }
+
+        .inquiry-info {
+            flex: 1;
+        }
+
+        .inquiry-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .inquiry-message {
+            margin: 0.5rem 0;
+        }
+
+        .inquiry-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background: #D4AF37;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .live-chat-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chat-interface {
+            display: flex;
+            height: 600px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chat-list {
+            width: 350px;
+            overflow-y: auto;
+            padding: 0;
+            border-right: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .chat-conversation {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .conversation-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            background: #4CAF50;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+
+        .conversation-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #fafafa;
+        }
+
+        .message-item {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .message-item.admin {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 0.75rem;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .message-item.customer .message-bubble {
+            background: #e3f2fd;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-item.admin .message-bubble {
+            background: #D4AF37;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .conversation-input {
+            border-top: 1px solid #eee;
+            padding: 1rem;
+            background: white;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+
+        .quick-responses {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-response {
+            background: #f0f0f0;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .quick-response:hover {
+            background: #e0e0e0;
+        }
+
+        .chat-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0;
+        }
+
+        .chat-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .chat-item.active {
+            background-color: #D4AF37;
+            color: white;
+        }
+
+        .chat-item.active .chat-time,
+        .chat-item.active .chat-preview {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-name {
+            font-weight: 500;
+        }
+
+        .chat-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chat-preview {
+            color: #666;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .notification-badge {
+            background: #D4AF37;
+            color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .notification-badge.urgent {
+            background: #ff0000;
+            animation: pulse 1.5s infinite;
+        }
+
+        .chat-item.urgent {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff0000;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .filter-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .status-filter {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        /* Login Form Styles */
+        .login-container {
+            max-width: 400px;
+            margin: 5rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .form-group input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            background: #D4AF37;
+            color: #fff;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #c4a030;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .inquiry-item {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .inquiry-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-container {
+                flex-direction: column;
+            }
+        }
+        
+        /* Real-time Communication Animations */
+        .message-status {
+            font-size: 0.7rem;
+            margin-left: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .message-sent .message-status {
+            color: #4CAF50;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes messageSentFlash {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(76, 175, 80, 0.1); }
+            100% { background-color: transparent; }
+        }
+        
+        .chat-item.message-sent {
+            animation: messageSentFlash 0.3s ease-out;
+        }
+        
+        /* Enhanced notification styles */
+        .notification-badge.urgent {
+            background: linear-gradient(45deg, #ff4444, #ff6666);
+            animation: urgentPulse 1s infinite;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+        
+        @keyframes urgentPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Live connection indicators */
+        .live-connection-indicator {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: liveBlink 2s infinite;
+        }
+        
+        @keyframes liveBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Message delivery animations */
+        .message-bubble {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .sender-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .message-item.customer {
+            margin-left: 0;
+            margin-right: 20%;
+        }
+        
+        .message-item.customer .message-bubble {
+            background: #e3f2fd;
+            border-left: 3px solid #2196F3;
+        }
+        
+        .message-item.admin {
+            margin-left: 20%;
+            margin-right: 0;
+        }
+        
+        .message-item.admin .message-bubble {
+            background: #D4AF37;
+            color: white;
+        }
+        
+        .message-item.admin .message-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 4px;
+            height: 4px;
+            background: #ccc;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .message-item.admin.message-sent .message-bubble::after {
+            background: #4CAF50;
+            animation: deliveryConfirm 0.3s ease-out;
+        }
+        
+        @keyframes deliveryConfirm {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginSection" class="login-container">
+        <div class="login-header">
+            <h2>Admin Portal Login</h2>
+            <p>Please enter your credentials to access the admin dashboard</p>
+        </div>
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+    </div>
+
+    <div id="adminDashboard" class="admin-container" style="display: none;">
+        <div class="admin-header">
+            <h1 class="admin-title">Golden Hunt Jewelry Admin Portal</h1>
+            <div class="header-buttons">
+                <button id="refreshBtn" class="btn btn-primary" style="margin-right: 10px;">🔄 Refresh</button>
+                <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="activeChats">0</div>
+                <div class="stat-label">Active Chats</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingInquiries">0</div>
+                <div class="stat-label">Pending Inquiries</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="resolvedToday">0</div>
+                <div class="stat-label">Resolved Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCustomers">0</div>
+                <div class="stat-label">Total Customers</div>
+            </div>
+        </div>
+
+        <div class="inquiries-container">
+            <div class="inquiries-header">
+                <h2>Customer Inquiries</h2>
+                <div class="notification-badge" id="newInquiries">0 New</div>
+            </div>
+            <div class="filter-container">
+                <input type="text" class="filter-input" placeholder="Search inquiries...">
+                <select class="status-filter">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="inProgress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+            <ul class="inquiry-list" id="inquiryList">
+                <!-- Inquiries will be populated dynamically -->
+            </ul>
+        </div>
+
+        <div class="live-chat-container">
+            <div class="inquiries-header">
+                <h2>Live Chat Support</h2>
+                <div class="notification-badge" id="activeChatsCount">0 Active</div>
+            </div>
+            <div class="chat-interface">
+                <div class="chat-list" id="chatList">
+                    <!-- Active chats will be populated dynamically -->
+                </div>
+                <div class="chat-conversation" id="chatConversation" style="display: flex;">
+                    <div class="conversation-header">
+                        <div class="customer-info">
+                            <span id="customerName">Customer Name</span>
+                            <span id="customerStatus" class="status-indicator">Online</span>
+                        </div>
+                        <button id="closeChatBtn" class="btn btn-secondary">Close Chat</button>
+                    </div>
+                    <div class="conversation-messages" id="conversationMessages">
+                        <div class="welcome-message" style="text-align: center; padding: 2rem; color: #666;">
+                            <h3>👋 Welcome to Live Chat</h3>
+                            <p>Select a customer from the left to start or continue a conversation.</p>
+                            <p>You'll see all chat history and can respond in real-time.</p>
+                        </div>
+                    </div>
+                    <div class="conversation-input">
+                        <div class="input-container">
+                            <input type="text" id="adminMessageInput" placeholder="Type your message..." autocomplete="off">
+                            <button id="sendMessageBtn" class="btn btn-primary">Send</button>
+                        </div>
+                        <div class="quick-responses">
+                            <button class="quick-response" data-message="Hello! I'm here to help you with your jewelry needs.">Greeting</button>
+                            <button class="quick-response" data-message="Let me check that for you right away.">Checking</button>
+                            <button class="quick-response" data-message="Is there anything else I can help you with today?">Anything Else</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
